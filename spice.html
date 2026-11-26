@@ -1,1 +1,1609 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPICE • Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+  body{min-height:100vh;background:linear-gradient(145deg,#1e1b1b 0%,#2a1f1a 100%);display:flex;justify-content:center;align-items:center;padding:16px;}
+  .app-container{width:100%;max-width:1280px;background:rgba(255,248,240,0.97);backdrop-filter:blur(10px);border-radius:48px;padding:32px 32px 40px;box-shadow:0 30px 50px rgba(0,0,0,0.6),0 0 0 2px rgba(255,215,160,0.3);border:1px solid #f0cba0;animation:floatIn .8s ease-out;}
+  @keyframes floatIn{0%{opacity:0;transform:translateY(30px) scale(.97);}100%{opacity:1;transform:translateY(0) scale(1);}}
+  .brand-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:16px;border-bottom:3px dashed #e6b98b;}
+  .logo-area h1{font-size:2.8rem;font-weight:800;letter-spacing:2px;background:linear-gradient(135deg,#c0392b,#e67e22,#f1c40f);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 4px 10px rgba(230,126,34,.3);}
+  .logo-area h1 i{font-size:2.5rem;color:#e67e22;margin-right:6px;-webkit-text-fill-color:#e67e22;}
+  .logo-area p{font-weight:700;color:#7f4f2b;letter-spacing:1px;background:#ffeedb;display:inline-block;padding:4px 16px;border-radius:40px;font-size:.9rem;margin-top:6px;border:1px solid #dcb48b;}
+  .owner-badge{display:flex;gap:12px;background:#2d241e;padding:12px 24px;border-radius:60px;color:#f7d9b8;font-weight:600;box-shadow:inset 0 -3px 0 #a5662c,0 10px 15px -5px rgba(0,0,0,.4);}
+  .owner-badge i{color:#f39c12;margin-right:8px;}
+  .nav-tabs{display:flex;gap:16px;margin-bottom:30px;flex-wrap:wrap;}
+  .tab-btn{background:#ffffffd9;border:2px solid #dcb48b;padding:14px 30px;border-radius:60px;font-weight:700;font-size:1.05rem;color:#5a3e2b;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .3s cubic-bezier(.25,.8,.25,1.2);box-shadow:0 8px 0 #b48c5e,0 8px 15px rgba(0,0,0,.2);}
+  .tab-btn i{font-size:1.2rem;color:#e67e22;}
+  .tab-btn.active{background:linear-gradient(145deg,#f39c12,#e67e22);border-color:#b85e0e;color:#fff;box-shadow:0 6px 0 #7a3e0e,0 10px 20px #e67e2250;transform:translateY(-2px);}
+  .tab-btn.active i{color:#fff;}
+  .tab-btn:hover{transform:translateY(-4px);box-shadow:0 10px 0 #b48c5e,0 15px 25px rgba(0,0,0,.3);}
+  .panel{display:none;animation:fadeSlide .5s ease;}
+  .panel.active{display:block;}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .admin-login-box{max-width:420px;margin:30px auto 20px;background:#fff7ed;padding:30px 28px;border-radius:40px;border:2px solid #eebb8b;box-shadow:0 20px 30px -10px #2a1f1a70;}
+  .admin-login-box h3{font-size:1.9rem;font-weight:700;color:#5a3e2b;text-align:center;margin-bottom:10px;}
+  .admin-login-box h3 i{color:#e67e22;margin-right:10px;}
+  .password-input{width:100%;padding:18px 22px;font-size:1.1rem;border:2px solid #dcb48b;border-radius:60px;outline:none;background:#fff;margin:18px 0 20px;font-weight:600;letter-spacing:1px;}
+  .password-input:focus{border-color:#e67e22;box-shadow:0 0 0 5px #e67e2230;}
+  .login-btn{width:100%;padding:16px;border-radius:60px;border:none;background:linear-gradient(145deg,#f39c12,#e67e22);color:#fff;font-weight:800;font-size:1.2rem;cursor:pointer;box-shadow:0 8px 0 #9d4e0e,0 10px 20px #e67e2250;letter-spacing:1px;}
+  .login-btn:hover{transform:translateY(-3px);box-shadow:0 11px 0 #9d4e0e,0 15px 25px #e67e2250;}
+  .login-btn:active{transform:translateY(3px);box-shadow:0 4px 0 #9d4e0e;}
+  .error-msg{color:#c0392b;font-weight:700;text-align:center;margin-top:16px;font-size:.95rem;background:#ffe6e0;padding:8px;border-radius:40px;display:none;}
+  .admin-dashboard{display:none;margin-top:24px;}
+  .section-title{font-size:1.6rem;font-weight:700;color:#5a3e2b;margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .section-title i{color:#e67e22;}
+  .form-card{background:#fff3e6;padding:28px;border-radius:32px;border:1px solid #ecc9a6;margin-bottom:30px;box-shadow:0 15px 25px -10px #b48c5e50;}
+  .form-row{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:18px;}
+  .form-group{flex:1 1 200px;display:flex;flex-direction:column;gap:8px;}
+  .form-group label{font-weight:700;color:#5a3e2b;font-size:.95rem;}
+  .form-group input,.form-group select{padding:14px 18px;border-radius:40px;border:2px solid #e0b68b;background:#fff;font-weight:600;outline:none;font-size:1rem;}
+  .form-group input:focus,.form-group select:focus{border-color:#e67e22;box-shadow:0 0 0 4px #e67e2230;}
+  .btn-add{background:#27ae60;border:none;color:#fff;padding:16px 32px;border-radius:60px;font-weight:800;font-size:1.1rem;display:inline-flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 6px 0 #1e7e45,0 8px 15px #1e7e4550;justify-content:center;}
+  .btn-add:hover{background:#2ecc71;transform:translateY(-3px);box-shadow:0 9px 0 #1e7e45,0 12px 20px #1e7e4550;}
+  .btn-add.orange{background:#e67e22;box-shadow:0 6px 0 #b85e0e,0 8px 15px #e67e2250;}
+  .btn-add.orange:hover{background:#f39c12;box-shadow:0 9px 0 #b85e0e,0 12px 20px #e67e2250;}
+  .btn-add.blue{background:#3498db;box-shadow:0 6px 0 #21618c,0 8px 15px #3498db50;}
+  .btn-add.blue:hover{background:#5dade2;box-shadow:0 9px 0 #21618c,0 12px 20px #3498db50;}
+  .menu-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px;margin-top:24px;}
+  .menu-item-card{background:#fff;border-radius:24px;padding:18px;border:1px solid #f0cfb0;box-shadow:0 8px 0 #d9b18b,0 10px 20px rgba(0,0,0,.1);display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;}
+  .menu-item-card i.main-ico{font-size:2.2rem;color:#e67e22;margin-bottom:8px;}
+  .menu-item-card h4{font-size:1.15rem;font-weight:800;color:#2d241e;}
+  .cat-tag{background:#3498db20;color:#1f618d;padding:3px 12px;border-radius:20px;font-size:.68rem;font-weight:800;margin-top:6px;border:1px solid #5dade280;text-transform:uppercase;letter-spacing:.5px;}
+  .variant-list{font-size:.72rem;color:#8b6b4b;font-weight:600;margin-top:8px;line-height:1.5;}
+  .deal-includes{font-size:.72rem;color:#8b6b4b;font-weight:600;margin-top:6px;line-height:1.4;}
+  .menu-item-card.deal-card{border:2px dashed #f39c12;background:linear-gradient(160deg,#fffaf2,#fff3e0);}
+  .delete-dish-btn{position:absolute;top:6px;right:10px;background:#e74c3c20;border:1px solid #e74c3c70;color:#c0392b;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;opacity:.6;}
+  .delete-dish-btn:hover{background:#e74c3c;color:#fff;opacity:1;transform:scale(1.1);}
+  .record-layout{display:flex;flex-wrap:wrap;gap:32px;margin-top:10px;align-items:flex-start;}
+  .dish-selector{flex:1 1 420px;background:#fff3e6;padding:24px 22px;border-radius:36px;border:1px solid #ecc9a6;box-shadow:0 12px 20px -8px #b48c5e70;}
+  .dish-selector h3{font-weight:800;color:#5a3e2b;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:1.15rem;}
+  .category-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .cat-pill{padding:8px 16px;border-radius:40px;border:2px solid #dcb48b;background:#fff;font-weight:700;font-size:.82rem;color:#5a3e2b;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s;}
+  .cat-pill:hover{background:#ffe4cc;}
+  .cat-pill.active{background:#e67e22;color:#fff;border-color:#b85e0e;box-shadow:0 4px 0 #9d4e0e;}
+  .dish-list{display:flex;flex-direction:column;gap:10px;max-height:380px;overflow-y:auto;padding-right:6px;}
+  .dish-item{background:#fff;border-radius:16px;padding:12px 14px;border:2px solid transparent;box-shadow:0 4px 0 #d9b18b;display:flex;flex-direction:column;gap:8px;}
+  .dish-item .dish-top{display:flex;align-items:center;gap:10px;}
+  .dish-item .dish-top > i{font-size:1.3rem;color:#e67e22;width:26px;text-align:center;flex-shrink:0;}
+  .dish-item .dish-name{font-weight:700;color:#2d241e;font-size:.95rem;flex:1;}
+  .dish-item .dish-sub{font-size:.72rem;color:#8b6b4b;font-weight:600;}
+  .dish-item .dish-bottom{display:flex;gap:8px;align-items:center;}
+  .variant-select{flex:1;padding:8px 12px;border-radius:30px;border:2px solid #e0b68b;background:#fff;font-weight:600;font-size:.82rem;color:#2d241e;outline:none;cursor:pointer;}
+  .variant-select:focus{border-color:#e67e22;}
+  .add-to-cart-btn{background:#27ae60;color:#fff;border:none;padding:8px 14px;border-radius:30px;font-weight:800;font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .add-to-cart-btn:hover{background:#2ecc71;transform:translateY(-2px);}
+  .section-divider{text-align:center;font-weight:800;font-size:.8rem;letter-spacing:2px;color:#b87c42;text-transform:uppercase;padding:6px 0 2px;border-top:2px dashed #e0b68b;margin-top:4px;}
+  .dish-item.deal-item{background:linear-gradient(90deg,#fffaf2,#ffedd6);border-left:4px solid #f39c12;}
+  .dish-item.deal-item .dish-name::before{content:'🎁 ';}
+  .cart-section{margin-top:20px;background:#fff;border-radius:24px;padding:16px 18px;border:2px solid #ecc9a6;box-shadow:0 6px 0 #e6cfb5;}
+  .cart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .cart-header h4{font-weight:800;color:#5a3e2b;display:flex;align-items:center;gap:8px;font-size:.95rem;}
+  .cart-header h4 i{color:#e67e22;}
+  .cart-count-badge{background:#e67e22;color:#fff;border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:800;}
+  .clear-cart-btn{background:#e74c3c18;border:1px solid #e74c3c70;color:#c0392b;padding:5px 12px;border-radius:30px;font-weight:700;font-size:.72rem;cursor:pointer;}
+  .clear-cart-btn:hover{background:#e74c3c;color:#fff;}
+  .cart-empty{color:#b48c5e;font-weight:600;font-size:.82rem;text-align:center;padding:10px 0;}
+  .cart-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #ecc9a6;gap:8px;}
+  .cart-item:last-child{border-bottom:none;}
+  .cart-item-name{font-weight:700;color:#2d241e;font-size:.85rem;flex:1;min-width:0;}
+  .cart-cat-label{color:#3498db;font-size:.68rem;font-weight:800;text-transform:uppercase;display:block;}
+  .cart-item-name small{display:block;color:#8b6b4b;font-weight:600;font-size:.72rem;margin-top:2px;}
+  .cart-controls{display:flex;align-items:center;gap:5px;}
+  .qty-btn{width:26px;height:26px;border-radius:50%;border:none;background:#f39c12;color:#fff;cursor:pointer;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;}
+  .qty-btn:hover{transform:scale(1.12);}
+  .qty-btn.remove{background:#e74c3c;}
+  .cart-qty{font-weight:800;color:#2d241e;min-width:16px;text-align:center;font-size:.85rem;}
+  .cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:2px solid #f0d9bf;font-weight:800;color:#5a3e2b;font-size:1rem;}
+  .cart-total-row .amount{color:#c0392b;font-size:1.15rem;}
+  .discount-section{margin-top:14px;padding:12px 14px;background:#fff9ee;border-radius:20px;border:2px dashed #e0b68b;}
+  .discount-section h4{font-weight:800;color:#5a3e2b;margin-bottom:8px;display:flex;align-items:center;gap:8px;font-size:.9rem;}
+  .discount-section h4 i{color:#e67e22;}
+  .discount-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .discount-row input{flex:1;min-width:120px;padding:10px 14px;border-radius:30px;border:2px solid #e0b68b;font-weight:600;outline:none;font-size:.82rem;}
+  .discount-row input:focus{border-color:#e67e22;}
+  .payment-options{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
+  .payment-options h4{font-weight:700;color:#5a3e2b;font-size:1rem;}
+  .payment-toggle{display:flex;gap:8px;flex-wrap:wrap;}
+  .pay-btn{flex:1;min-width:80px;padding:12px 8px;border-radius:50px;border:2px solid #c7a17a;background:#fff;font-weight:800;color:#5a3e2b;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.75rem;transition:.2s;}
+  .pay-btn.active{background:#e67e22;border-color:#b85e0e;color:#fff;box-shadow:0 5px 0 #9d4e0e;}
+  .pay-btn i{font-size:1.1rem;}
+  .conditional-inputs{margin-top:8px;display:flex;flex-direction:column;gap:10px;}
+  .cond-input{width:100%;padding:12px 16px;border-radius:40px;border:2px solid #e0b68b;font-weight:600;outline:none;font-size:.88rem;background:#fff;}
+  .cond-input:focus{border-color:#e67e22;}
+  .split-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .split-row label{font-weight:700;font-size:.8rem;color:#5a3e2b;min-width:110px;}
+  .split-row input{flex:1;min-width:100px;padding:10px 14px;border-radius:30px;border:2px solid #e0b68b;font-weight:600;outline:none;font-size:.85rem;}
+  .bill-summary{margin-top:14px;padding:14px 16px;background:#fff;border-radius:20px;border:2px solid #ecc9a6;box-shadow:0 4px 0 #e6cfb5;}
+  .bill-row{display:flex;justify-content:space-between;padding:4px 0;font-weight:700;color:#5a3e2b;font-size:.9rem;}
+  .bill-row.discount-row-line{color:#c0392b;}
+  .bill-row.total{border-top:2px solid #f0d9bf;margin-top:6px;padding-top:10px;font-size:1.15rem;color:#c0392b;}
+  .entry-btn{width:100%;margin-top:18px;background:#2c3e50;border:none;color:#fff;padding:18px;border-radius:60px;font-weight:800;font-size:1.15rem;display:flex;align-items:center;justify-content:center;gap:14px;cursor:pointer;box-shadow:0 8px 0 #1a252f,0 12px 20px #00000030;}
+  .entry-btn:hover{background:#34495e;transform:translateY(-3px);box-shadow:0 11px 0 #1a252f,0 18px 25px #00000030;}
+  .entry-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+  .recent-records{flex:1 1 380px;background:#fff3e6;padding:24px 22px;border-radius:36px;border:1px solid #ecc9a6;box-shadow:0 12px 20px -8px #b48c5e70;max-height:800px;overflow-y:auto;}
+  .recent-records h3{font-weight:800;color:#5a3e2b;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+  .record-entry{background:#fff;border-radius:20px;padding:14px 16px;margin-bottom:10px;border-left:6px solid #e67e22;box-shadow:0 4px 0 #d9b18b;display:flex;justify-content:space-between;gap:10px;animation:recordIn .3s ease;}
+  @keyframes recordIn{from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:translateX(0);}}
+  .record-info{flex:1;min-width:0;}
+  .record-info strong{color:#2d241e;font-size:.88rem;line-height:1.4;display:block;}
+  .rec-cat{color:#1f618d;font-size:.7rem;font-weight:800;text-transform:uppercase;}
+  .rec-qty{color:#e67e22;font-weight:800;}
+  .record-info small{color:#8b6b4b;font-weight:600;display:block;margin-top:4px;font-size:.78rem;line-height:1.5;}
+  .record-actions{display:flex;align-items:flex-start;gap:6px;flex-shrink:0;}
+  .payment-badge{background:#f1c40f20;border-radius:40px;padding:5px 12px;font-weight:700;font-size:.72rem;color:#b85e0e;border:1px solid #e6b98b;white-space:nowrap;}
+  .payment-badge.account{background:#3498db20;color:#1f618d;border-color:#5dade2;}
+  .payment-badge.udhar{background:#e74c3c20;color:#922b21;border-color:#e6a8a8;}
+  .payment-badge.split{background:#9b59b620;color:#6c3483;border-color:#bb8fce;}
+  .empty-state{color:#b48c5e;font-weight:600;text-align:center;padding:30px 0;}
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:#f7e5d3;border-radius:10px;}
+  ::-webkit-scrollbar-thumb{background:#d9a066;border-radius:10px;}
+  .dish-count-badge{background:#e67e22;color:#fff;border-radius:40px;font-size:.85rem;padding:4px 14px;margin-left:auto;font-weight:700;}
+  .order-summary-bar{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:16px;background:#fff3e6;border-radius:28px;padding:14px 20px;border:1px solid #ecc9a6;font-weight:700;color:#5a3e2b;align-items:center;font-size:.9rem;}
+  .order-summary-bar span i{color:#e67e22;margin-right:6px;}
+  .date-filter-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:#fff3e6;border-radius:28px;padding:12px 18px;margin-bottom:14px;border:1px solid #ecc9a6;}
+  .date-filter-bar label{font-weight:700;color:#5a3e2b;display:flex;align-items:center;gap:8px;font-size:.9rem;}
+  .date-filter-bar input[type="date"],.date-filter-bar select{padding:10px 16px;border-radius:40px;border:2px solid #dcb48b;font-weight:600;outline:none;background:#fff;color:#2d241e;font-size:.88rem;}
+  .date-filter-bar select{cursor:pointer;}
+  .date-filter-bar input:focus,.date-filter-bar select:focus{border-color:#e67e22;}
+  .daily-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px;}
+  .daily-summary-card{background:#fff;padding:14px;border-radius:22px;text-align:center;border-bottom:5px solid #e67e22;box-shadow:0 5px 0 #d9b18b;}
+  .daily-summary-card .label{font-size:.72rem;font-weight:600;color:#8b6b4b;text-transform:uppercase;letter-spacing:1px;}
+  .daily-summary-card .value{font-size:1.5rem;font-weight:800;color:#2d241e;margin-top:4px;}
+  .daily-summary-card.cash{border-bottom-color:#f1c40f;}
+  .daily-summary-card.account{border-bottom-color:#3498db;}
+  .daily-summary-card.udhar{border-bottom-color:#e74c3c;}
+  .daily-summary-card.total{border-bottom-color:#27ae60;}
+  .record-delete-btn{background:#e74c3c15;border:1px solid #e74c3c70;color:#c0392b;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;}
+  .record-delete-btn:hover{background:#e74c3c;color:#fff;}
+  .record-edit-btn{background:#3498db15;border:1px solid #3498db70;color:#1f618d;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;}
+  .record-edit-btn:hover{background:#3498db;color:#fff;}
+  .variant-input-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+  .variant-input-row input{flex:1;padding:10px 14px;border-radius:30px;border:2px solid #e0b68b;font-weight:600;outline:none;font-size:.85rem;}
+  .variant-input-row input.v-price{max-width:120px;flex:0 0 120px;}
+  .variant-input-row .remove-variant{background:#e74c3c;color:#fff;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:800;flex-shrink:0;}
+  .add-variant-btn{background:#3498db;color:#fff;border:none;padding:8px 16px;border-radius:30px;font-weight:700;font-size:.8rem;cursor:pointer;margin-top:4px;display:inline-flex;align-items:center;gap:6px;}
+  .add-variant-btn:hover{background:#2980b9;}
+  .category-list{display:flex;flex-wrap:wrap;gap:10px;}
+  .category-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border-radius:30px;border:2px solid #e0b68b;font-weight:700;color:#5a3e2b;font-size:.82rem;}
+  .category-chip .remove-cat{background:#e74c3c20;border:1px solid #e74c3c70;color:#c0392b;width:22px;height:22px;border-radius:50%;font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .category-chip .remove-cat:hover{background:#e74c3c;color:#fff;}
+  /* EDIT MODAL */
+  .edit-modal-overlay{display:none;position:fixed;inset:0;background:rgba(20,15,10,.65);backdrop-filter:blur(4px);z-index:1000;justify-content:center;align-items:flex-start;padding:20px;overflow-y:auto;}
+  .edit-modal-overlay.active{display:flex;}
+  .edit-modal{width:100%;max-width:640px;background:#fffaf3;border-radius:32px;padding:24px;box-shadow:0 30px 60px rgba(0,0,0,.55);border:2px solid #f0cba0;margin:auto;animation:fadeSlide .3s ease;}
+  .edit-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px dashed #e6b98b;}
+  .edit-modal-header h3{color:#5a3e2b;font-weight:800;display:flex;gap:10px;align-items:center;font-size:1.3rem;}
+  .edit-modal-header h3 i{color:#e67e22;}
+  .edit-modal-close{background:#e74c3c18;border:1px solid #e74c3c70;color:#c0392b;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;}
+  .edit-modal-close:hover{background:#e74c3c;color:#fff;}
+  .edit-item-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border-radius:16px;padding:10px 14px;margin-bottom:8px;border:1px solid #f0cfb0;box-shadow:0 3px 0 #e6cfb5;}
+  .edit-item-info{flex:1;min-width:0;font-weight:700;color:#2d241e;font-size:.88rem;}
+  .edit-item-info small{display:block;color:#8b6b4b;font-weight:600;font-size:.75rem;margin-top:2px;}
+  .edit-item-controls{display:flex;gap:6px;align-items:center;}
+  .edit-add-section{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0;padding:12px;background:#fff3e6;border-radius:16px;border:1px dashed #dcb48b;}
+  .edit-add-section select{flex:1;min-width:110px;padding:8px 12px;border-radius:30px;border:2px solid #e0b68b;font-weight:600;font-size:.82rem;background:#fff;outline:none;}
+  .edit-add-section button{background:#27ae60;color:#fff;border:none;padding:8px 16px;border-radius:30px;font-weight:800;font-size:.8rem;cursor:pointer;}
+  .edit-add-section button:hover{background:#2ecc71;}
+  .edit-modal-footer{display:flex;gap:12px;margin-top:16px;}
+  .edit-save-btn{flex:2;background:#27ae60;color:#fff;border:none;padding:14px;border-radius:50px;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 6px 0 #1e7e45;}
+  .edit-save-btn:hover{background:#2ecc71;}
+  .edit-cancel-btn{flex:1;background:#95a5a6;color:#fff;border:none;padding:14px;border-radius:50px;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 6px 0 #7f8c8d;}
+  .edit-cancel-btn:hover{background:#a6b3b4;}
+  .edit-pay-toggle{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  .edit-pay-toggle .pay-btn{flex:1;min-width:70px;padding:10px 6px;font-size:.7rem;}
+  /* INVENTORY */
+  .inventory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:8px;}
+  .inv-card{background:#fff;border-radius:22px;padding:16px 16px 14px;border:1px solid #f0cfb0;box-shadow:0 6px 0 #d9b18b;position:relative;}
+  .inv-card h4{font-size:1rem;font-weight:800;color:#2d241e;padding-right:28px;}
+  .inv-card .inv-cat{display:inline-block;background:#3498db20;color:#1f618d;padding:2px 10px;border-radius:20px;font-size:.66rem;font-weight:800;margin-top:6px;text-transform:uppercase;border:1px solid #5dade280;}
+  .inv-card .inv-stock{font-size:1.4rem;font-weight:800;color:#27ae60;margin-top:8px;}
+  .inv-card .inv-stock.low{color:#c0392b;}
+  .inv-card .inv-meta{font-size:.75rem;color:#8b6b4b;font-weight:600;margin-top:2px;line-height:1.5;}
+  .inv-card .delete-dish-btn{top:10px;right:10px;}
+  .inv-type-pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.68rem;font-weight:800;text-transform:uppercase;}
+  .inv-type-pill.in{background:#27ae6020;color:#1e7e45;border:1px solid #27ae6070;}
+  .inv-type-pill.out{background:#e74c3c20;color:#922b21;border:1px solid #e74c3c70;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#2c3e50;color:#fff;padding:14px 26px;border-radius:40px;font-weight:700;font-size:.9rem;box-shadow:0 12px 25px rgba(0,0,0,.4);opacity:0;transition:all .35s ease;z-index:2000;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.err{background:#c0392b;}
+  .toast.ok{background:#27ae60;}
+  .loading-row{text-align:center;color:#b48c5e;font-weight:700;padding:20px;font-size:.85rem;}
+  @media (max-width:760px){
+    .app-container{padding:20px;}
+    .logo-area h1{font-size:2.2rem;}
+    .brand-header{flex-direction:column;align-items:start;gap:14px;}
+    .owner-badge{width:100%;justify-content:center;}
+    .tab-btn{flex:1;justify-content:center;padding:12px 16px;font-size:.95rem;}
+    .menu-preview{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:480px){
+    .app-container{padding:16px;border-radius:32px;}
+    .menu-preview{grid-template-columns:1fr;}
+    .record-layout{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- ================= HEADER ================= -->
+  <div class="brand-header">
+    <div class="logo-area">
+      <h1><i class="fas fa-utensils"></i> SPICE</h1>
+      <p><i class="fas fa-crown"></i> SPICE MANAGEMENT</p>
+    </div>
+    <div class="owner-badge"><i class="fas fa-user-tie"></i> Admin: Abubakar1122</div>
+  </div>
+
+  <!-- ================= NAV TABS ================= -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" data-tab="admin"><i class="fas fa-user-shield"></i> Admin Panel</button>
+    <button class="tab-btn" data-tab="record"><i class="fas fa-clipboard-list"></i> Record Entry</button>
+    <button class="tab-btn" data-tab="inventory"><i class="fas fa-boxes-stacked"></i> Inventory Record</button>
+  </div>
+
+  <!-- ================= ADMIN PANEL ================= -->
+  <div id="adminPanel" class="panel active">
+    <div id="adminLoginBox" class="admin-login-box">
+      <h3><i class="fas fa-lock"></i> Admin Login</h3>
+      <input type="password" id="adminPassword" class="password-input" placeholder="Enter admin password" autocomplete="off">
+      <button id="loginBtn" class="login-btn"><i class="fas fa-arrow-right-to-bracket"></i> Unlock Dashboard</button>
+      <div id="loginError" class="error-msg"><i class="fas fa-circle-exclamation"></i> Incorrect password. Try again.</div>
+    </div>
+
+    <div id="adminDashboard" class="admin-dashboard">
+
+      <!-- CATEGORY MANAGEMENT -->
+      <div class="section-title"><i class="fas fa-tags"></i> Categories</div>
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-folder-plus"></i> New Category Name</label>
+            <input type="text" id="categoryNameInput" placeholder="e.g., BBQ, Tandoor, Dessert">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-image"></i> Icon</label>
+            <select id="categoryIconSelect">
+              <option value="fa-drumstick-bite">🍗 Chicken</option>
+              <option value="fa-fish">🐟 Fish</option>
+              <option value="fa-bowl-food">🥘 Curry / Biryani</option>
+              <option value="fa-mug-hot">☕ Drink</option>
+              <option value="fa-leaf">🌿 Raita / Salad</option>
+              <option value="fa-fire">🔥 BBQ</option>
+              <option value="fa-bread-slice">🍞 Bread</option>
+              <option value="fa-ice-cream">🍦 Dessert</option>
+              <option value="fa-utensils">🍽️ Other</option>
+            </select>
+          </div>
+        </div>
+        <button id="addCategoryBtn" class="btn-add"><i class="fas fa-plus-circle"></i> Add Category</button>
+        <div style="margin-top:18px;">
+          <label style="font-weight:700;color:#5a3e2b;display:block;margin-bottom:10px;font-size:.9rem;">
+            <i class="fas fa-list"></i> Existing Categories:
+          </label>
+          <div id="categoryChips" class="category-list"></div>
+        </div>
+      </div>
+
+      <!-- ADD DISH -->
+      <div class="section-title" style="margin-top:10px;"><i class="fas fa-pen-fancy"></i> Add New Dish</div>
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-drumstick-bite"></i> Dish Name</label>
+            <input type="text" id="dishNameInput" placeholder="e.g., Chicken Chargha">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-folder"></i> Category</label>
+            <select id="dishCategorySelect"></select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-image"></i> Icon</label>
+            <select id="dishIconSelect">
+              <option value="fa-fish">🐟 Fish</option>
+              <option value="fa-drumstick-bite">🍗 Chicken</option>
+              <option value="fa-utensils">🍽️ Dish</option>
+              <option value="fa-bowl-food">🥘 Curry / Biryani</option>
+              <option value="fa-fire">🔥 BBQ</option>
+              <option value="fa-bread-slice">🍞 Bread</option>
+              <option value="fa-mug-hot">☕ Drink</option>
+              <option value="fa-leaf">🌿 Salad / Raita</option>
+              <option value="fa-ice-cream">🍦 Dessert</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-gift"></i> Deal? (optional)</label>
+            <select id="dishIsDeal">
+              <option value="false">Normal Dish</option>
+              <option value="true">Deal / Combo</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:2 1 300px;">
+            <label><i class="fas fa-list-check"></i> Deal Includes (optional)</label>
+            <input type="text" id="dishDealNote" placeholder="e.g., 1 Chicken Piece + 1 Drink + Fries">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label><i class="fas fa-layer-group"></i> Variants &amp; Prices</label>
+          <div id="variantContainer"></div>
+          <div>
+            <button type="button" class="add-variant-btn" id="addVariantBtn">
+              <i class="fas fa-plus"></i> Add Variant
+            </button>
+          </div>
+        </div>
+
+        <button id="addDishBtn" class="btn-add orange" style="margin-top:16px;">
+          <i class="fas fa-plus-circle"></i> Add Dish
+        </button>
+      </div>
+
+      <!-- DISH LIST -->
+      <div class="section-title">
+        <i class="fas fa-utensils"></i> Menu Items
+        <span class="dish-count-badge" id="dishCountBadge">0</span>
+      </div>
+      <div class="menu-preview" id="adminMenuPreview"></div>
+
+      <!-- INVENTORY MANAGEMENT -->
+      <div class="section-title" style="margin-top:34px;"><i class="fas fa-boxes-stacked"></i> Inventory Management</div>
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-cube"></i> Item Name</label>
+            <input type="text" id="invNameInput" placeholder="e.g., Chicken, Rice, Oil">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-folder"></i> Category</label>
+            <input type="text" id="invCategoryInput" placeholder="e.g., Meat, Grocery, Beverage">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-ruler"></i> Unit</label>
+            <select id="invUnitSelect">
+              <option value="kg">kg</option>
+              <option value="gram">gram</option>
+              <option value="litre">litre</option>
+              <option value="ml">ml</option>
+              <option value="pcs">pcs</option>
+              <option value="dozen">dozen</option>
+              <option value="packet">packet</option>
+              <option value="bag">bag</option>
+              <option value="bottle">bottle</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-arrow-down-wide-short"></i> Opening Quantity</label>
+            <input type="number" id="invQtyInput" placeholder="0" step="0.01" value="0">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-money-bill-wave"></i> Cost per Unit (Rs)</label>
+            <input type="number" id="invCostInput" placeholder="0" step="0.01" value="0">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-truck"></i> Supplier (optional)</label>
+            <input type="text" id="invSupplierInput" placeholder="Supplier name">
+          </div>
+        </div>
+        <button id="addInvItemBtn" class="btn-add blue"><i class="fas fa-plus-circle"></i> Add Inventory Item</button>
+
+        <div style="margin-top:22px;">
+          <label style="font-weight:700;color:#5a3e2b;display:block;margin-bottom:10px;font-size:.9rem;">
+            <i class="fas fa-warehouse"></i> Current Stock:
+          </label>
+          <div id="inventoryGrid" class="inventory-grid"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= RECORD ENTRY PANEL ================= -->
+  <div id="recordPanel" class="panel">
+    <div class="order-summary-bar">
+      <span><i class="fas fa-receipt"></i> Total Orders: <span id="sumOrders">0</span></span>
+      <span><i class="fas fa-sack-dollar"></i> Total Sale: <span id="sumSale">Rs 0</span></span>
+      <span><i class="fas fa-money-bill-wave"></i> Cash: <span id="sumCash">Rs 0</span></span>
+      <span><i class="fas fa-building-columns"></i> Account: <span id="sumAccount">Rs 0</span></span>
+      <span><i class="fas fa-hand-holding-dollar"></i> Udhar: <span id="sumUdhar">Rs 0</span></span>
+    </div>
+
+    <div class="record-layout">
+      <!-- LEFT: dish selector + cart -->
+      <div class="dish-selector">
+        <h3><i class="fas fa-bowl-food"></i> Select Dishes</h3>
+        <div class="category-pills" id="recordCategoryPills"></div>
+        <div class="dish-list" id="recordDishList"></div>
+
+        <!-- CART -->
+        <div class="cart-section">
+          <div class="cart-header">
+            <h4><i class="fas fa-cart-shopping"></i> Cart <span class="cart-count-badge" id="cartCountBadge">0</span></h4>
+            <button class="clear-cart-btn" id="clearCartBtn"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div id="cartItemsWrap"></div>
+          <div class="cart-total-row">
+            <span>Subtotal</span>
+            <span class="amount" id="cartSubtotal">Rs 0</span>
+          </div>
+        </div>
+
+        <!-- DISCOUNT -->
+        <div class="discount-section">
+          <h4><i class="fas fa-percent"></i> Discount</h4>
+          <div class="discount-row">
+            <input type="number" id="discountInput" placeholder="Discount amount (Rs)" step="0.01" min="0" value="0">
+          </div>
+        </div>
+
+        <!-- PAYMENT -->
+        <div class="payment-options">
+          <h4><i class="fas fa-credit-card"></i> Payment Method</h4>
+          <div class="payment-toggle" id="paymentToggle">
+            <button class="pay-btn active" data-pay="cash"><i class="fas fa-money-bill-wave"></i> Cash</button>
+            <button class="pay-btn" data-pay="account"><i class="fas fa-building-columns"></i> Account</button>
+            <button class="pay-btn" data-pay="udhar"><i class="fas fa-hand-holding-dollar"></i> Udhar</button>
+            <button class="pay-btn" data-pay="split"><i class="fas fa-shuffle"></i> Split</button>
+          </div>
+          <div class="conditional-inputs" id="conditionalInputs"></div>
+        </div>
+
+        <!-- BILL -->
+        <div class="bill-summary">
+          <div class="bill-row"><span>Subtotal</span><span id="billSubtotal">Rs 0</span></div>
+          <div class="bill-row discount-row-line"><span>Discount</span><span id="billDiscount">- Rs 0</span></div>
+          <div class="bill-row total"><span>Total</span><span id="billTotal">Rs 0</span></div>
+        </div>
+
+        <button class="entry-btn" id="saveOrderBtn"><i class="fas fa-floppy-disk"></i> Save Record</button>
+      </div>
+
+      <!-- RIGHT: recent records -->
+      <div class="recent-records">
+        <h3><i class="fas fa-clock-rotate-left"></i> Recent Records</h3>
+
+        <div class="date-filter-bar">
+          <label><i class="fas fa-calendar-day"></i> From
+            <input type="date" id="orderDateFrom">
+          </label>
+          <label><i class="fas fa-calendar-day"></i> To
+            <input type="date" id="orderDateTo">
+          </label>
+          <button class="clear-cart-btn" id="clearOrderFilter" style="padding:10px 18px;font-size:.8rem;">
+            <i class="fas fa-rotate-left"></i> Reset
+          </button>
+        </div>
+
+        <div class="daily-summary-grid" id="dailySummaryGrid"></div>
+        <div id="recordsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= INVENTORY RECORD PANEL ================= -->
+  <div id="inventoryPanel" class="panel">
+    <div class="record-layout">
+      <!-- LEFT: new inventory transaction -->
+      <div class="dish-selector">
+        <h3><i class="fas fa-arrow-right-arrow-left"></i> New Inventory Entry</h3>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label><i class="fas fa-cube"></i> Select Item</label>
+          <select id="invRecordItemSelect"></select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label><i class="fas fa-right-left"></i> Transaction Type</label>
+          <select id="invRecordType">
+            <option value="in">Stock IN (Purchase / Received)</option>
+            <option value="out">Stock OUT (Used / Wasted)</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-hashtag"></i> Quantity</label>
+            <input type="number" id="invRecordQty" placeholder="0" step="0.01" min="0">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-money-bill-wave"></i> Cost (Rs, optional)</label>
+            <input type="number" id="invRecordCost" placeholder="0" step="0.01" min="0">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label><i class="fas fa-note-sticky"></i> Note (optional)</label>
+          <input type="text" id="invRecordNote" placeholder="e.g., Bought from Al-Madina store">
+        </div>
+
+        <div class="bill-summary" style="margin-bottom:0;">
+          <div class="bill-row"><span>Current Stock</span><span id="invCurrentStock">-</span></div>
+          <div class="bill-row total"><span>After Transaction</span><span id="invAfterStock">-</span></div>
+        </div>
+
+        <button class="entry-btn" id="saveInvRecordBtn">
+          <i class="fas fa-floppy-disk"></i> Save Inventory Record
+        </button>
+      </div>
+
+      <!-- RIGHT: inventory records -->
+      <div class="recent-records">
+        <h3><i class="fas fa-clipboard-list"></i> Inventory Records</h3>
+
+        <div class="date-filter-bar">
+          <label><i class="fas fa-calendar-day"></i> From
+            <input type="date" id="invDateFrom">
+          </label>
+          <label><i class="fas fa-calendar-day"></i> To
+            <input type="date" id="invDateTo">
+          </label>
+          <button class="clear-cart-btn" id="clearInvFilter" style="padding:10px 18px;font-size:.8rem;">
+            <i class="fas fa-rotate-left"></i> Reset
+          </button>
+        </div>
+
+        <div id="invRecordsList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= EDIT ORDER MODAL ================= -->
+<div class="edit-modal-overlay" id="editModalOverlay">
+  <div class="edit-modal">
+    <div class="edit-modal-header">
+      <h3><i class="fas fa-pen-to-square"></i> Edit Bill</h3>
+      <button class="edit-modal-close" id="editModalClose"><i class="fas fa-xmark"></i></button>
+    </div>
+
+    <div id="editItemList"></div>
+
+    <div class="edit-add-section">
+      <select id="editAddDishSelect"></select>
+      <button id="editAddDishBtn"><i class="fas fa-plus"></i> Add</button>
+    </div>
+
+    <div class="form-group" style="margin-bottom:10px;">
+      <label><i class="fas fa-percent"></i> Discount (Rs)</label>
+      <input type="number" id="editDiscount" step="0.01" min="0" value="0">
+    </div>
+
+    <div class="edit-pay-toggle" id="editPayToggle">
+      <button class="pay-btn" data-pay="cash"><i class="fas fa-money-bill-wave"></i> Cash</button>
+      <button class="pay-btn" data-pay="account"><i class="fas fa-building-columns"></i> Account</button>
+      <button class="pay-btn" data-pay="udhar"><i class="fas fa-hand-holding-dollar"></i> Udhar</button>
+      <button class="pay-btn" data-pay="split"><i class="fas fa-shuffle"></i> Split</button>
+    </div>
+
+    <div class="bill-summary">
+      <div class="bill-row"><span>Subtotal</span><span id="editSubtotal">Rs 0</span></div>
+      <div class="bill-row discount-row-line"><span>Discount</span><span id="editDiscountLine">- Rs 0</span></div>
+      <div class="bill-row total"><span>Total</span><span id="editTotal">Rs 0</span></div>
+    </div>
+
+    <div class="edit-modal-footer">
+      <button class="edit-save-btn" id="editSaveBtn"><i class="fas fa-floppy-disk"></i> Save Changes</button>
+      <button class="edit-cancel-btn" id="editCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ============================================================
+   SPICE MANAGEMENT — Supabase connected app
+   ============================================================ */
+
+const SUPABASE_URL = 'https://rbcxquckicmtwgthjifh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_56v7lockh1FdGFj7e_ipgQ_jJQB1AMG';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const ADMIN_PASSWORD = 'Abubakar1122';
+
+/* ---------------- STATE ---------------- */
+const state = {
+  categories: [],
+  dishes: [],
+  cart: [],
+  payMethod: 'cash',
+  split: { cash: 0, account: 0, udhar: 0 },
+  selectedCat: 'all',
+  orders: [],
+  inventoryItems: [],
+  inventoryRecords: [],
+  editOrder: null,
+  editPay: 'cash'
+};
+
+/* ---------------- HELPERS ---------------- */
+const $ = (id) => document.getElementById(id);
+const money = (n) => 'Rs ' + (Number(n) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const uid = () => Math.random().toString(36).slice(2, 10);
+
+let toastTimer = null;
+function toast(msg, type = 'ok') {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast ' + type; }, 2800);
+}
+
+function localDateKey(d) {
+  const dt = new Date(d);
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, '0');
+  const day = String(dt.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+function prettyTime(d) {
+  const dt = new Date(d);
+  let h = dt.getHours();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${String(h).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')} ${ampm}`;
+}
+function prettyDate(d) {
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const map = { admin: 'adminPanel', record: 'recordPanel', inventory: 'inventoryPanel' };
+    $(map[btn.dataset.tab]).classList.add('active');
+
+    if (btn.dataset.tab === 'record') { loadOrders(); renderDishSelector(); renderCart(); }
+    if (btn.dataset.tab === 'inventory') { loadInventoryItems(); loadInventoryRecords(); }
+  });
+});
+
+/* ============================================================
+   ADMIN LOGIN
+   ============================================================ */
+$('loginBtn').addEventListener('click', doLogin);
+$('adminPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function doLogin() {
+  const val = $('adminPassword').value.trim();
+  if (val === ADMIN_PASSWORD) {
+    $('adminLoginBox').style.display = 'none';
+    $('adminDashboard').style.display = 'block';
+    $('loginError').style.display = 'none';
+    loadCategories();
+    loadDishes();
+    loadInventoryItems();
+    toast('Welcome, Admin!', 'ok');
+  } else {
+    $('loginError').style.display = 'block';
+  }
+}
+
+/* ============================================================
+   CATEGORIES
+   ============================================================ */
+async function loadCategories() {
+  const { data, error } = await sb.from('categories').select('*').order('created_at', { ascending: true });
+  if (error) { console.error(error); toast('Categories load failed: ' + error.message, 'err'); return; }
+  state.categories = data || [];
+  renderCategoryChips();
+  renderDishCategorySelect();
+  renderRecordCategoryPills();
+}
+
+function renderCategoryChips() {
+  const wrap = $('categoryChips');
+  if (!state.categories.length) { wrap.innerHTML = '<div class="empty-state" style="padding:10px 0;">No categories yet.</div>'; return; }
+  wrap.innerHTML = state.categories.map(c => `
+    <div class="category-chip">
+      <i class="fas ${esc(c.icon || 'fa-utensils')}"></i>
+      <span>${esc(c.name)}</span>
+      <button class="remove-cat" data-id="${c.id}" title="Delete"><i class="fas fa-xmark"></i></button>
+    </div>`).join('');
+
+  wrap.querySelectorAll('.remove-cat').forEach(b => {
+    b.addEventListener('click', async () => {
+      if (!confirm('Delete this category? Dishes in it will become uncategorised.')) return;
+      const { error } = await sb.from('categories').delete().eq('id', b.dataset.id);
+      if (error) return toast('Delete failed: ' + error.message, 'err');
+      toast('Category deleted', 'ok');
+      loadCategories(); loadDishes();
+    });
+  });
+}
+
+function renderDishCategorySelect() {
+  const sel = $('dishCategorySelect');
+  if (!state.categories.length) { sel.innerHTML = '<option value="">-- Add a category first --</option>'; return; }
+  sel.innerHTML = state.categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+}
+
+$('addCategoryBtn').addEventListener('click', async () => {
+  const name = $('categoryNameInput').value.trim();
+  const icon = $('categoryIconSelect').value;
+  if (!name) return toast('Enter a category name', 'err');
+
+  const { error } = await sb.from('categories').insert({ name, icon });
+  if (error) return toast('Failed: ' + error.message, 'err');
+
+  $('categoryNameInput').value = '';
+  toast('Category added', 'ok');
+  loadCategories();
+});
+
+/* ============================================================
+   DISHES
+   ============================================================ */
+async function loadDishes() {
+  const { data, error } = await sb.from('dishes').select('*').order('created_at', { ascending: false });
+  if (error) { console.error(error); toast('Dishes load failed: ' + error.message, 'err'); return; }
+  state.dishes = data || [];
+  renderAdminMenu();
+  renderDishSelector();
+}
+
+function catNameOf(dish) {
+  if (dish.category_name) return dish.category_name;
+  const c = state.categories.find(x => x.id === dish.category_id);
+  return c ? c.name : 'Uncategorised';
+}
+
+function renderAdminMenu() {
+  const wrap = $('adminMenuPreview');
+  $('dishCountBadge').textContent = state.dishes.length;
+
+  if (!state.dishes.length) {
+    wrap.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">No dishes yet. Add your first dish above.</div>';
+    return;
+  }
+
+  wrap.innerHTML = state.dishes.map(d => {
+    const variants = Array.isArray(d.variants) ? d.variants : [];
+    return `
+      <div class="menu-item-card ${d.is_deal ? 'deal-card' : ''}">
+        <button class="delete-dish-btn" data-id="${d.id}" title="Delete dish"><i class="fas fa-trash"></i></button>
+        <i class="fas ${esc(d.icon || 'fa-utensils')} main-ico"></i>
+        <h4>${esc(d.name)}</h4>
+        <span class="cat-tag">${esc(catNameOf(d))}</span>
+        <div class="variant-list">
+          ${variants.map(v => `${esc(v.name)} — ${money(v.price)}`).join('<br>')}
+        </div>
+        ${d.is_deal && d.deal_note ? `<div class="deal-includes">🎁 ${esc(d.deal_note)}</div>` : ''}
+      </div>`;
+  }).join('');
+
+  wrap.querySelectorAll('.delete-dish-btn').forEach(b => {
+    b.addEventListener('click', async () => {
+      if (!confirm('Delete this dish?')) return;
+      const { error } = await sb.from('dishes').delete().eq('id', b.dataset.id);
+      if (error) return toast('Delete failed: ' + error.message, 'err');
+      toast('Dish deleted', 'ok');
+      loadDishes();
+    });
+  });
+}
+
+/* -------- variant rows -------- */
+function addVariantRow(name = '', price = '') {
+  const div = document.createElement('div');
+  div.className = 'variant-input-row';
+  div.innerHTML = `
+    <input type="text" class="v-name" placeholder="Variant name (e.g., Half / Full)" value="${esc(name)}">
+    <input type="number" class="v-price" placeholder="Price" step="0.01" min="0" value="${esc(price)}">
+    <button type="button" class="remove-variant" title="Remove"><i class="fas fa-xmark"></i></button>`;
+  div.querySelector('.remove-variant').addEventListener('click', () => div.remove());
+  $('variantContainer').appendChild(div);
+}
+$('addVariantBtn').addEventListener('click', () => addVariantRow('', ''));
+addVariantRow('Full', '');
+
+$('addDishBtn').addEventListener('click', async () => {
+  const name = $('dishNameInput').value.trim();
+  const catId = $('dishCategorySelect').value;
+  const icon = $('dishIconSelect').value;
+  const isDeal = $('dishIsDeal').value === 'true';
+  const dealNote = $('dishDealNote').value.trim();
+
+  if (!name) return toast('Enter a dish name', 'err');
+  if (!catId) return toast('Please create a category first', 'err');
+
+  const rows = $('variantContainer').querySelectorAll('.variant-input-row');
+  const variants = [];
+  rows.forEach(r => {
+    const vn = r.querySelector('.v-name').value.trim();
+    const vp = Number(r.querySelector('.v-price').value) || 0;
+    if (vn) variants.push({ name: vn, price: vp });
+  });
+  if (!variants.length) return toast('Add at least one variant with a name', 'err');
+
+  const catObj = state.categories.find(c => c.id === catId);
+
+  const { error } = await sb.from('dishes').insert({
+    name,
+    category_id: catId,
+    category_name: catObj ? catObj.name : null,
+    icon,
+    variants,
+    is_deal: isDeal,
+    deal_note: dealNote || null
+  });
+
+  if (error) return toast('Failed: ' + error.message, 'err');
+
+  $('dishNameInput').value = '';
+  $('dishDealNote').value = '';
+  $('dishIsDeal').value = 'false';
+  $('variantContainer').innerHTML = '';
+  addVariantRow('Full', '');
+
+  toast('Dish added', 'ok');
+  loadDishes();
+});
+
+/* ============================================================
+   RECORD ENTRY — dish selector
+   ============================================================ */
+function renderRecordCategoryPills() {
+  const wrap = $('recordCategoryPills');
+  const cats = ['all', ...state.categories.map(c => c.name)];
+  wrap.innerHTML = cats.map(c => `
+    <button class="cat-pill ${state.selectedCat === c ? 'active' : ''}" data-cat="${esc(c)}">
+      <i class="fas ${c === 'all' ? 'fa-layer-group' : (state.categories.find(x => x.name === c)?.icon || 'fa-utensils')}"></i>
+      ${c === 'all' ? 'All' : esc(c)}
+    </button>`).join('');
+
+  wrap.querySelectorAll('.cat-pill').forEach(b => {
+    b.addEventListener('click', () => {
+      state.selectedCat = b.dataset.cat;
+      renderRecordCategoryPills();
+      renderDishSelector();
+    });
+  });
+}
+
+function renderDishSelector() {
+  const wrap = $('recordDishList');
+  let list = state.dishes;
+  if (state.selectedCat !== 'all') list = list.filter(d => catNameOf(d) === state.selectedCat);
+
+  if (!list.length) {
+    wrap.innerHTML = '<div class="empty-state">No dishes found. Add dishes in the Admin Panel.</div>';
+    return;
+  }
+
+  wrap.innerHTML = list.map(d => {
+    const variants = Array.isArray(d.variants) && d.variants.length ? d.variants : [{ name: 'Full', price: 0 }];
+    const opts = variants.map((v, i) => `<option value="${i}">${esc(v.name)} — ${money(v.price)}</option>`).join('');
+    return `
+      <div class="dish-item ${d.is_deal ? 'deal-item' : ''}">
+        <div class="dish-top">
+          <i class="fas ${esc(d.icon || 'fa-utensils')}"></i>
+          <div style="flex:1;min-width:0;">
+            <div class="dish-name">${esc(d.name)}</div>
+            <div class="dish-sub">${esc(catNameOf(d))}${d.is_deal && d.deal_note ? ' • ' + esc(d.deal_note) : ''}</div>
+          </div>
+        </div>
+        <div class="dish-bottom">
+          <select class="variant-select" data-dish="${d.id}">${opts}</select>
+          <button class="add-to-cart-btn" data-dish="${d.id}"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  wrap.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dishId = btn.dataset.dish;
+      const dish = state.dishes.find(d => d.id === dishId);
+      if (!dish) return;
+      const sel = wrap.querySelector(`.variant-select[data-dish="${dishId}"]`);
+      const idx = Number(sel.value) || 0;
+      const variants = Array.isArray(dish.variants) && dish.variants.length ? dish.variants : [{ name: 'Full', price: 0 }];
+      const v = variants[idx] || variants[0];
+      addToCart(dish, v);
+    });
+  });
+}
+
+/* ---------------- CART ---------------- */
+function cartKey(dishId, variantName) { return dishId + '||' + variantName; }
+
+function addToCart(dish, variant) {
+  const key = cartKey(dish.id, variant.name);
+  const existing = state.cart.find(c => c.key === key);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    state.cart.push({
+      key,
+      dishId: dish.id,
+      name: dish.name,
+      category: catNameOf(dish),
+      variant: variant.name,
+      price: Number(variant.price) || 0,
+      qty: 1
+    });
+  }
+  renderCart();
+  toast('Added: ' + dish.name, 'ok');
+}
+
+function renderCart() {
+  const wrap = $('cartItemsWrap');
+  const count = state.cart.reduce((s, i) => s + i.qty, 0);
+  $('cartCountBadge').textContent = count;
+
+  if (!state.cart.length) {
+    wrap.innerHTML = '<div class="cart-empty">Cart is empty. Add dishes above.</div>';
+  } else {
+    wrap.innerHTML = state.cart.map(i => `
+      <div class="cart-item">
+        <div class="cart-item-name">
+          <span class="cart-cat-label">${esc(i.category)}</span>
+          ${esc(i.name)}
+          <small>${esc(i.variant)} • ${money(i.price)} each</small>
+        </div>
+        <div class="cart-controls">
+          <button class="qty-btn" data-act="minus" data-key="${esc(i.key)}"><i class="fas fa-minus"></i></button>
+          <span class="cart-qty">${i.qty}</span>
+          <button class="qty-btn" data-act="plus" data-key="${esc(i.key)}"><i class="fas fa-plus"></i></button>
+          <button class="qty-btn remove" data-act="remove" data-key="${esc(i.key)}"><i class="fas fa-xmark"></i></button>
+        </div>
+      </div>`).join('');
+
+    wrap.querySelectorAll('.qty-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        const item = state.cart.find(c => c.key === b.dataset.key);
+        if (!item) return;
+        if (b.dataset.act === 'plus') item.qty += 1;
+        if (b.dataset.act === 'minus') item.qty -= 1;
+        if (b.dataset.act === 'remove') item.qty = 0;
+        if (item.qty <= 0) state.cart = state.cart.filter(c => c.key !== item.key);
+        renderCart();
+      });
+    });
+  }
+
+  updateBill();
+}
+
+$('clearCartBtn').addEventListener('click', () => {
+  if (!state.cart.length) return;
+  if (!confirm('Clear the whole cart?')) return;
+  state.cart = [];
+  renderCart();
+});
+
+/* ---------------- BILL / PAYMENT ---------------- */
+function cartSubtotal() {
+  return state.cart.reduce((s, i) => s + (Number(i.price) || 0) * i.qty, 0);
+}
+function discountValue() {
+  const d = Number($('discountInput').value) || 0;
+  return Math.max(0, d);
+}
+function updateBill() {
+  const sub = cartSubtotal();
+  const disc = discountValue();
+  const total = Math.max(0, sub - disc);
+  $('cartSubtotal').textContent = money(sub);
+  $('billSubtotal').textContent = money(sub);
+  $('billDiscount').textContent = '- ' + money(disc);
+  $('billTotal').textContent = money(total);
+  renderConditionalInputs(total);
+}
+$('discountInput').addEventListener('input', updateBill);
+
+document.querySelectorAll('#paymentToggle .pay-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#paymentToggle .pay-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    state.payMethod = b.dataset.pay;
+    updateBill();
+  });
+});
+
+function renderConditionalInputs(total) {
+  const wrap = $('conditionalInputs');
+  if (state.payMethod === 'split') {
+    const remain = total - (Number(state.split.cash) || 0) - (Number(state.split.account) || 0) - (Number(state.split.udhar) || 0);
+    wrap.innerHTML = `
+      <div class="split-row"><label>Cash</label>
+        <input type="number" id="splitCash" value="${state.split.cash || 0}" step="0.01" min="0"></div>
+      <div class="split-row"><label>Account</label>
+        <input type="number" id="splitAccount" value="${state.split.account || 0}" step="0.01" min="0"></div>
+      <div class="split-row"><label>Udhar</label>
+        <input type="number" id="splitUdhar" value="${state.split.udhar || 0}" step="0.01" min="0"></div>
+      <div class="split-row"><label>Remaining</label>
+        <div class="cash-display" style="color:${remain > 0.01 ? '#c0392b' : '#27ae60'}">${money(remain)}</div></div>`;
+
+    ['cash', 'account', 'udhar'].forEach(k => {
+      const inp = $('split' + k.charAt(0).toUpperCase() + k.slice(1));
+      if (!inp) return;
+      inp.addEventListener('input', () => {
+        state.split[k] = Number(inp.value) || 0;
+        const t = Math.max(0, cartSubtotal() - discountValue());
+        renderConditionalInputs(t);
+        // keep focus
+        const again = $('split' + k.charAt(0).toUpperCase() + k.slice(1));
+        if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
+      });
+    });
+  } else {
+    wrap.innerHTML = '';
+  }
+}
+
+/* ---------------- SAVE ORDER ---------------- */
+$('saveOrderBtn').addEventListener('click', async () => {
+  if (!state.cart.length) return toast('Cart is empty', 'err');
+
+  const sub = cartSubtotal();
+  const disc = discountValue();
+  const total = Math.max(0, sub - disc);
+
+  let cash_amount = 0, account_amount = 0, udhar_amount = 0;
+  if (state.payMethod === 'cash') cash_amount = total;
+  else if (state.payMethod === 'account') account_amount = total;
+  else if (state.payMethod === 'udhar') udhar_amount = total;
+  else {
+    cash_amount = Number(state.split.cash) || 0;
+    account_amount = Number(state.split.account) || 0;
+    udhar_amount = Number(state.split.udhar) || 0;
+    const sum = cash_amount + account_amount + udhar_amount;
+    if (Math.abs(sum - total) > 0.5) {
+      return toast('Split amounts must equal the total (' + money(total) + ')', 'err');
+    }
+  }
+
+  const payload = {
+    items: state.cart.map(i => ({ name: i.name, category: i.category, variant: i.variant, price: i.price, qty: i.qty })),
+    subtotal: sub,
+    discount: disc,
+    total,
+    payment_method: state.payMethod,
+    cash_amount, account_amount, udhar_amount
+  };
+
+  const btn = $('saveOrderBtn');
+  btn.disabled = true;
+  const { error } = await sb.from('orders').insert(payload);
+  btn.disabled = false;
+
+  if (error) return toast('Save failed: ' + error.message, 'err');
+
+  state.cart = [];
+  state.split = { cash: 0, account: 0, udhar: 0 };
+  $('discountInput').value = 0;
+  renderCart();
+  toast('Record saved successfully', 'ok');
+  loadOrders();
+});
+
+/* ============================================================
+   ORDERS — list, summary, edit, delete
+   ============================================================ */
+async function loadOrders() {
+  const { data, error } = await sb.from('orders').select('*').order('created_at', { ascending: false }).limit(500);
+  if (error) { console.error(error); toast('Records load failed: ' + error.message, 'err'); return; }
+  state.orders = data || [];
+  renderOrders();
+  renderOrdersSummary();
+}
+
+function filteredOrders() {
+  const from = $('orderDateFrom').value;
+  const to = $('orderDateTo').value;
+  return state.orders.filter(o => {
+    const key = localDateKey(o.created_at);
+    if (from && key < from) return false;
+    if (to && key > to) return false;
+    return true;
+  });
+}
+
+function renderOrdersSummary() {
+  const list = filteredOrders();
+  const sum = (k) => list.reduce((s, o) => s + (Number(o[k]) || 0), 0);
+  $('sumOrders').textContent = list.length;
+  $('sumSale').textContent = money(sum('total'));
+  $('sumCash').textContent = money(sum('cash_amount'));
+  $('sumAccount').textContent = money(sum('account_amount'));
+  $('sumUdhar').textContent = money(sum('udhar_amount'));
+
+  // daily summary cards
+  const grid = $('dailySummaryGrid');
+  if (!list.length) { grid.innerHTML = ''; return; }
+  const sub = sum('subtotal'), disc = sum('discount'), tot = sum('total');
+  grid.innerHTML = `
+    <div class="daily-summary-card total"><div class="label">Total Sale</div><div class="value">${money(tot)}</div></div>
+    <div class="daily-summary-card cash"><div class="label">Cash</div><div class="value">${money(sum('cash_amount'))}</div></div>
+    <div class="daily-summary-card account"><div class="label">Account</div><div class="value">${money(sum('account_amount'))}</div></div>
+    <div class="daily-summary-card udhar"><div class="label">Udhar</div><div class="value">${money(sum('udhar_amount'))}</div></div>
+    <div class="daily-summary-card"><div class="label">Discount</div><div class="value">${money(disc)}</div></div>
+    <div class="daily-summary-card"><div class="label">Orders</div><div class="value">${list.length}</div></div>`;
+}
+
+function paymentBadge(method) {
+  const map = {
+    cash: { cls: '', label: 'Cash' },
+    account: { cls: 'account', label: 'Account' },
+    udhar: { cls: 'udhar', label: 'Udhar' },
+    split: { cls: 'split', label: 'Split' }
+  };
+  const m = map[method] || { cls: '', label: method || 'Cash' };
+  return `<span class="payment-badge ${m.cls}">${esc(m.label)}</span>`;
+}
+
+function renderOrders() {
+  const wrap = $('recordsList');
+  const list = filteredOrders();
+
+  if (!list.length) {
+    wrap.innerHTML = '<div class="empty-state">No records found for this filter.</div>';
+    return;
+  }
+
+  wrap.innerHTML = list.map(o => {
+    const items = Array.isArray(o.items) ? o.items : [];
+    const itemText = items.map(i => `${esc(i.name)}${i.variant ? ' (' + esc(i.variant) + ')' : ''} ×${i.qty}`).join(', ');
+    return `
+      <div class="record-entry">
+        <div class="record-info">
+          <strong>${itemText || 'No items'}</strong>
+          <small>
+            <span class="rec-cat">${esc(prettyDate(o.created_at))} • ${esc(prettyTime(o.created_at))}</span><br>
+            Subtotal: ${money(o.subtotal)} | Discount: ${money(o.discount)} |
+            <span class="rec-qty">Total: ${money(o.total)}</span>
+          </small>
+        </div>
+        <div class="record-actions">
+          ${paymentBadge(o.payment_method)}
+          <button class="record-edit-btn" data-id="${o.id}" title="Edit"><i class="fas fa-pen"></i></button>
+          <button class="record-delete-btn" data-id="${o.id}" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
+  }).join('');
+
+  wrap.querySelectorAll('.record-delete-btn').forEach(b => {
+    b.addEventListener('click', async () => {
+      if (!confirm('Delete this record permanently?')) return;
+      const { error } = await sb.from('orders').delete().eq('id', b.dataset.id);
+      if (error) return toast('Delete failed: ' + error.message, 'err');
+      toast('Record deleted', 'ok');
+      loadOrders();
+    });
+  });
+
+  wrap.querySelectorAll('.record-edit-btn').forEach(b => {
+    b.addEventListener('click', () => openEditModal(b.dataset.id));
+  });
+}
+
+$('orderDateFrom').addEventListener('change', () => { renderOrders(); renderOrdersSummary(); });
+$('orderDateTo').addEventListener('change', () => { renderOrders(); renderOrdersSummary(); });
+$('clearOrderFilter').addEventListener('click', () => {
+  $('orderDateFrom').value = '';
+  $('orderDateTo').value = '';
+  renderOrders();
+  renderOrdersSummary();
+});
+
+/* ---------------- EDIT MODAL ---------------- */
+function openEditModal(orderId) {
+  const o = state.orders.find(x => x.id === orderId);
+  if (!o) return;
+  state.editOrder = JSON.parse(JSON.stringify({
+    id: o.id,
+    items: Array.isArray(o.items) ? o.items : [],
+    discount: Number(o.discount) || 0,
+    payment_method: o.payment_method || 'cash',
+    cash_amount: Number(o.cash_amount) || 0,
+    account_amount: Number(o.account_amount) || 0,
+    udhar_amount: Number(o.udhar_amount) || 0
+  }));
+  state.editPay = state.editOrder.payment_method;
+
+  // fill dish select
+  const sel = $('editAddDishSelect');
+  sel.innerHTML = '<option value="">-- Select dish to add --</option>' +
+    state.dishes.map(d => {
+      const variants = Array.isArray(d.variants) && d.variants.length ? d.variants : [{ name: 'Full', price: 0 }];
+      return variants.map((v, i) =>
+        `<option value="${d.id}|${i}">${esc(d.name)} — ${esc(v.name)} (${money(v.price)})</option>`
+      ).join('');
+    }).join('');
+
+  $('editDiscount').value = state.editOrder.discount;
+  document.querySelectorAll('#editPayToggle .pay-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.pay === state.editPay);
+  });
+
+  renderEditItems();
+  $('editModalOverlay').classList.add('active');
+}
+
+function editSubtotal() {
+  return (state.editOrder?.items || []).reduce((s, i) => s + (Number(i.price) || 0) * (Number(i.qty) || 0), 0);
+}
+
+function renderEditItems() {
+  const wrap = $('editItemList');
+  const items = state.editOrder.items;
+  if (!items.length) {
+    wrap.innerHTML = '<div class="empty-state">No items. Add some below.</div>';
+  } else {
+    wrap.innerHTML = items.map((i, idx) => `
+      <div class="edit-item-row">
+        <div class="edit-item-info">
+          ${esc(i.name)}
+          <small>${esc(i.variant || '')} • ${money(i.price)} each</small>
+        </div>
+        <div class="edit-item-controls">
+          <button class="qty-btn" data-act="minus" data-idx="${idx}"><i class="fas fa-minus"></i></button>
+          <span class="cart-qty">${i.qty}</span>
+          <button class="qty-btn" data-act="plus" data-idx="${idx}"><i class="fas fa-plus"></i></button>
+          <button class="qty-btn remove" data-act="remove" data-idx="${idx}"><i class="fas fa-xmark"></i></button>
+        </div>
+      </div>`).join('');
+
+    wrap.querySelectorAll('.qty-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        const idx = Number(b.dataset.idx);
+        const item = state.editOrder.items[idx];
+        if (!item) return;
+        if (b.dataset.act === 'plus') item.qty += 1;
+        if (b.dataset.act === 'minus') item.qty -= 1;
+        if (b.dataset.act === 'remove') item.qty = 0;
+        if (item.qty <= 0) state.editOrder.items.splice(idx, 1);
+        renderEditItems();
+      });
+    });
+  }
+  updateEditTotals();
+}
+
+function updateEditTotals() {
+  const sub = editSubtotal();
+  const disc = Math.max(0, Number($('editDiscount').value) || 0);
+  const tot = Math.max(0, sub - disc);
+  $('editSubtotal').textContent = money(sub);
+  $('editDiscountLine').textContent = '- ' + money(disc);
+  $('editTotal').textContent = money(tot);
+}
+
+$('editDiscount').addEventListener('input', updateEditTotals);
+
+$('editAddDishBtn').addEventListener('click', () => {
+  const val = $('editAddDishSelect').value;
+  if (!val) return toast('Choose a dish first', 'err');
+  const [dishId, vIdx] = val.split('|');
+  const dish = state.dishes.find(d => d.id === dishId);
+  if (!dish) return;
+  const variants = Array.isArray(dish.variants) && dish.variants.length ? dish.variants : [{ name: 'Full', price: 0 }];
+  const v = variants[Number(vIdx)] || variants[0];
+
+  const existing = state.editOrder.items.find(i => i.name === dish.name && i.variant === v.name);
+  if (existing) existing.qty += 1;
+  else state.editOrder.items.push({
+    name: dish.name,
+    category: catNameOf(dish),
+    variant: v.name,
+    price: Number(v.price) || 0,
+    qty: 1
+  });
+
+  $('editAddDishSelect').value = '';
+  renderEditItems();
+});
+
+document.querySelectorAll('#editPayToggle .pay-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#editPayToggle .pay-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    state.editPay = b.dataset.pay;
+  });
+});
+
+function closeEditModal() {
+  $('editModalOverlay').classList.remove('active');
+  state.editOrder = null;
+}
+$('editModalClose').addEventListener('click', closeEditModal);
+$('editCancelBtn').addEventListener('click', closeEditModal);
+$('editModalOverlay').addEventListener('click', (e) => { if (e.target === $('editModalOverlay')) closeEditModal(); });
+
+$('editSaveBtn').addEventListener('click', async () => {
+  if (!state.editOrder) return;
+  const items = state.editOrder.items;
+  if (!items.length) return toast('Bill must have at least one item', 'err');
+
+  const sub = editSubtotal();
+  const disc = Math.max(0, Number($('editDiscount').value) || 0);
+  const total = Math.max(0, sub - disc);
+
+  let cash_amount = 0, account_amount = 0, udhar_amount = 0;
+  if (state.editPay === 'cash') cash_amount = total;
+  else if (state.editPay === 'account') account_amount = total;
+  else if (state.editPay === 'udhar') udhar_amount = total;
+  else {
+    // preserve existing split ratio if possible
+    const oldTotal = Number(state.editOrder.cash_amount) + Number(state.editOrder.account_amount) + Number(state.editOrder.udhar_amount) || 1;
+    cash_amount = +(total * (Number(state.editOrder.cash_amount) / oldTotal)).toFixed(2);
+    account_amount = +(total * (Number(state.editOrder.account_amount) / oldTotal)).toFixed(2);
+    udhar_amount = +(total - cash_amount - account_amount).toFixed(2);
+  }
+
+  const { error } = await sb.from('orders').update({
+    items,
+    subtotal: sub,
+    discount: disc,
+    total,
+    payment_method: state.editPay,
+    cash_amount, account_amount, udhar_amount
+  }).eq('id', state.editOrder.id);
+
+  if (error) return toast('Update failed: ' + error.message, 'err');
+
+  toast('Bill updated', 'ok');
+  closeEditModal();
+  loadOrders();
+});
+
+/* ============================================================
+   INVENTORY
+   ============================================================ */
+async function loadInventoryItems() {
+  const { data, error } = await sb.from('inventory_items').select('*').order('name', { ascending: true });
+  if (error) { console.error(error); toast('Inventory load failed: ' + error.message, 'err'); return; }
+  state.inventoryItems = data || [];
+  renderInventoryGrid();
+  renderInvItemSelect();
+}
+
+function renderInventoryGrid() {
+  const wrap = $('inventoryGrid');
+  if (!state.inventoryItems.length) {
+    wrap.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">No inventory items yet. Add your first item above.</div>';
+    return;
+  }
+  wrap.innerHTML = state.inventoryItems.map(it => {
+    const qty = Number(it.quantity) || 0;
+    const low = qty <= 0;
+    return `
+      <div class="inv-card">
+        <button class="delete-dish-btn" data-id="${it.id}" title="Delete item"><i class="fas fa-trash"></i></button>
+        <h4>${esc(it.name)}</h4>
+        <span class="inv-cat">${esc(it.category || 'General')}</span>
+        <div class="inv-stock ${low ? 'low' : ''}">${qty.toFixed(2)} <span style="font-size:.8rem;font-weight:700;">${esc(it.unit || 'pcs')}</span></div>
+        <div class="inv-meta">
+          Cost/unit: ${money(it.cost_per_unit)}<br>
+          ${it.supplier ? 'Supplier: ' + esc(it.supplier) : '&nbsp;'}
+        </div>
+      </div>`;
+  }).join('');
+
+  wrap.querySelectorAll('.delete-dish-btn').forEach(b => {
+    b.addEventListener('click', async () => {
+      if (!confirm('Delete this inventory item? Its records will remain.')) return;
+      const { error } = await sb.from('inventory_items').delete().eq('id', b.dataset.id);
+      if (error) return toast('Delete failed: ' + error.message, 'err');
+      toast('Item deleted', 'ok');
+      loadInventoryItems();
+      loadInventoryRecords();
+    });
+  });
+}
+
+$('addInvItemBtn').addEventListener('click', async () => {
+  const name = $('invNameInput').value.trim();
+  const category = $('invCategoryInput').value.trim();
+  const unit = $('invUnitSelect').value;
+  const quantity = Number($('invQtyInput').value) || 0;
+  const cost = Number($('invCostInput').value) || 0;
+  const supplier = $('invSupplierInput').value.trim();
+
+  if (!name) return toast('Enter an item name', 'err');
+
+  const { error } = await sb.from('inventory_items').insert({
+    name, category: category || 'General', unit, quantity, cost_per_unit: cost, supplier: supplier || null
+  });
+  if (error) return toast('Failed: ' + error.message, 'err');
+
+  $('invNameInput').value = '';
+  $('invCategoryInput').value = '';
+  $('invQtyInput').value = 0;
+  $('invCostInput').value = 0;
+  $('invSupplierInput').value = '';
+
+  toast('Inventory item added', 'ok');
+  loadInventoryItems();
+});
+
+/* -------- inventory record panel -------- */
+function renderInvItemSelect() {
+  const sel = $('invRecordItemSelect');
+  if (!state.inventoryItems.length) {
+    sel.innerHTML = '<option value="">-- Add items in Admin Panel first --</option>';
+    $('invCurrentStock').textContent = '-';
+    $('invAfterStock').textContent = '-';
+    return;
+  }
+  const current = sel.value;
+  sel.innerHTML = state.inventoryItems.map(it =>
+    `<option value="${it.id}">${esc(it.name)} (${esc(it.unit || 'pcs')})</option>`
+  ).join('');
+  if (current && state.inventoryItems.some(i => i.id === current)) sel.value = current;
+  updateInvPreview();
+}
+
+function updateInvPreview() {
+  const id = $('invRecordItemSelect').value;
+  const item = state.inventoryItems.find(i => i.id === id);
+  const qty = Number($('invRecordQty').value) || 0;
+  const type = $('invRecordType').value;
+  if (!item) {
+    $('invCurrentStock').textContent = '-';
+    $('invAfterStock').textContent = '-';
+    return;
+  }
+  const cur = Number(item.quantity) || 0;
+  const after = type === 'in' ? cur + qty : cur - qty;
+  $('invCurrentStock').textContent = `${cur.toFixed(2)} ${item.unit || 'pcs'}`;
+  const el = $('invAfterStock');
+  el.textContent = `${after.toFixed(2)} ${item.unit || 'pcs'}`;
+  el.style.color = after < 0 ? '#c0392b' : '#27ae60';
+}
+
+$('invRecordItemSelect').addEventListener('change', updateInvPreview);
+$('invRecordQty').addEventListener('input', updateInvPreview);
+$('invRecordType').addEventListener('change', updateInvPreview);
+
+$('saveInvRecordBtn').addEventListener('click', async () => {
+  const itemId = $('invRecordItemSelect').value;
+  const item = state.inventoryItems.find(i => i.id === itemId);
+  if (!item) return toast('Select an inventory item', 'err');
+
+  const type = $('invRecordType').value;
+  const qty = Number($('invRecordQty').value) || 0;
+  if (qty <= 0) return toast('Enter a quantity greater than 0', 'err');
+
+  const cost = Number($('invRecordCost').value) || 0;
+  const note = $('invRecordNote').value.trim();
+
+  const cur = Number(item.quantity) || 0;
+  const newQty = type === 'in' ? cur + qty : cur - qty;
+  if (newQty < 0 && !confirm('This will make stock negative. Continue?')) return;
+
+  const btn = $('saveInvRecordBtn');
+  btn.disabled = true;
+
+  const { error: recErr } = await sb.from('inventory_records').insert({
+    item_id: item.id,
+    item_name: item.name,
+    unit: item.unit,
+    type,
+    quantity: qty,
+    cost,
+    note: note || null
+  });
+
+  if (recErr) { btn.disabled = false; return toast('Save failed: ' + recErr.message, 'err'); }
+
+  const { error: upErr } = await sb.from('inventory_items').update({ quantity: newQty }).eq('id', item.id);
+  btn.disabled = false;
+
+  if (upErr) return toast('Stock update failed: ' + upErr.message, 'err');
+
+  $('invRecordQty').value = '';
+  $('invRecordCost').value = '';
+  $('invRecordNote').value = '';
+
+  toast('Inventory record saved', 'ok');
+  await loadInventoryItems();
+  loadInventoryRecords();
+});
+
+async function loadInventoryRecords() {
+  const { data, error } = await sb.from('inventory_records').select('*').order('created_at', { ascending: false }).limit(500);
+  if (error) { console.error(error); toast('Inventory records load failed: ' + error.message, 'err'); return; }
+  state.inventoryRecords = data || [];
+  renderInvRecords();
+}
+
+function filteredInvRecords() {
+  const from = $('invDateFrom').value;
+  const to = $('invDateTo').value;
+  return state.inventoryRecords.filter(r => {
+    const key = localDateKey(r.created_at);
+    if (from && key < from) return false;
+    if (to && key > to) return false;
+    return true;
+  });
+}
+
+function renderInvRecords() {
+  const wrap = $('invRecordsList');
+  const list = filteredInvRecords();
+
+  if (!list.length) {
+    wrap.innerHTML = '<div class="empty-state">No inventory records found for this filter.</div>';
+    return;
+  }
+
+  wrap.innerHTML = list.map(r => `
+    <div class="record-entry" style="border-left-color:${r.type === 'in' ? '#27ae60' : '#e74c3c'};">
+      <div class="record-info">
+        <strong>
+          ${esc(r.item_name)}
+          <span class="inv-type-pill ${r.type === 'in' ? 'in' : 'out'}">${r.type === 'in' ? 'IN' : 'OUT'}</span>
+        </strong>
+        <small>
+          <span class="rec-cat">${esc(prettyDate(r.created_at))} • ${esc(prettyTime(r.created_at))}</span><br>
+          Qty: <span class="rec-qty">${Number(r.quantity).toFixed(2)} ${esc(r.unit || '')}</span>
+          ${Number(r.cost) ? ' | Cost: ' + money(r.cost) : ''}
+          ${r.note ? '<br>Note: ' + esc(r.note) : ''}
+        </small>
+      </div>
+      <div class="record-actions">
+        <button class="record-delete-btn" data-id="${r.id}" title="Delete"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`).join('');
+
+  wrap.querySelectorAll('.record-delete-btn').forEach(b => {
+    b.addEventListener('click', async () => {
+      if (!confirm('Delete this inventory record? (Stock quantity will NOT be reversed)')) return;
+      const { error } = await sb.from('inventory_records').delete().eq('id', b.dataset.id);
+      if (error) return toast('Delete failed: ' + error.message, 'err');
+      toast('Record deleted', 'ok');
+      loadInventoryRecords();
+    });
+  });
+}
+
+$('invDateFrom').addEventListener('change', renderInvRecords);
+$('invDateTo').addEventListener('change', renderInvRecords);
+$('clearInvFilter').addEventListener('click', () => {
+  $('invDateFrom').value = '';
+  $('invDateTo').value = '';
+  renderInvRecords();
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init() {
+  await loadCategories();
+  await loadDishes();
+  await loadInventoryItems();
+  await loadOrders();
+  renderCart();
+})();
+</script>
+</body>
+</html>
